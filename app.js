@@ -1,7 +1,7 @@
 const colors = require('colors')
 
 function prime(num = 1) {
-    if (typeof num !== 'number') {
+    if (isNaN(+num)) {
         console.log(`Не число\n`)
         return
     }
@@ -34,6 +34,6 @@ function prime(num = 1) {
     console.log(' ')
 }
 
-prime(17)
-prime(-1)
-prime('rr')
+const args = process.argv.slice(2)
+
+args.forEach(arg => prime(arg))
