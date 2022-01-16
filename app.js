@@ -2,8 +2,7 @@ const args = process.argv.slice(2)[0].split('-')
 
 let finalDate = new Date(`${args[3] || new Date().getFullYear()}-${args[2] || new Date().getMonth()}-${args[1] || new Date().getDay()}T${args[0] - 3 || new Date().getHours()}:00:00.000Z`)
 
-let time = finalDate - new Date();
-console.log(finalDate, new Date(), time)
+let time = Math.floor((finalDate - new Date()) / 1000) * 1000;
 
 const interval = setInterval(() => {
   if (time > 1000) {
