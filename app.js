@@ -1,39 +1,21 @@
-const colors = require('colors')
+const fs = require('fs')
+const readLine = require('readline')
 
-function prime(num = 1) {
-    if (typeof num !== 'number') {
-        console.log(`Не число\n`)
-        return
+const readStream = fs.createReadStream('./access.log', 'utf8')
+const rl = readLine.createInterface({
+    input: readStream,
+    terminal: true
+});
+
+const ips = ['89.123.1.41', '34.48.240.111']
+const writeStreams = ips.map(ip => fs.createWriteStream(`./logs/${ip}_requests.log`, { flags: 'a', encoding: 'utf8' }))
+
+rl.on('line', (line) => {
+  for (let i = 0; i < ips.length; i++) {
+    if (line.includes(ips[i])) {
+      writeStreams[i].write(`${line}\n`)
     }
+  }
+})
 
-    let res = 0
-    const colorsForPrimes = ['red', 'yellow', 'green']
-    let indexOfColor = 0
-    const primeNumbers = []
-
-    for(let candidate = 2; candidate <= num; candidate++) {
-        let isPrime = true
-
-        for(let i = 0; i < primeNumbers.length; i++) {
-            if (candidate % primeNumbers[i] === 0) {
-                isPrime = false
-                break
-            }
-        }
-
-        if (isPrime) {
-            res++
-            indexOfColor = colorsForPrimes[(res-1) % colorsForPrimes.length]
-            console.log(colors[indexOfColor](candidate))
-            primeNumbers.push(candidate)
-        }
-    }
-
-    !res && console.log(colors[colorsForPrimes[0]]('Нет простых чисел'))
-    
-    console.log(' ')
-}
-
-prime(17)
-prime(-1)
-prime('rr')
+readStream.on('end', () => console.log('Файл прочитан'))
